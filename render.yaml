@@ -14,15 +14,16 @@ services:
         value: production
     healthCheckPath: /api/health
 
-  # Frontend (React Static Site)
-  - type: static
+  # Frontend (React Static Site served with serve)
+  - type: web
     name: fuzzy-frontend
+    env: node
+    region: oregon
     buildCommand: "cd frontend && npm install && npm run build"
-    staticPublishPath: frontend/dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    startCommand: "cd frontend && npx serve -s dist -l $PORT"
+    plan: free
     envVars:
+      - key: NODE_VERSION
+        value: "18"
       - key: VITE_API_URL
         value: https://fuzzy-backend.onrender.com
